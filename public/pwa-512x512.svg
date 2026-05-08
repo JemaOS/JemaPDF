@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background: solid brand violet fills entire canvas (safe for Android maskable) -->
+  <rect width="512" height="512" rx="88" fill="#8286ef"/>
+  <!-- Document centered, scales proportionally -->
+  <g transform="translate(138, 96)">
+    <!-- Document body -->
+    <path d="M16 0 a16 16 0 0 0 -16 16 v288 a16 16 0 0 0 16 16 h204 a16 16 0 0 0 16 -16 v-224 l-80 -80 z" fill="#ffffff"/>
+    <!-- Folded corner -->
+    <path d="M156 0 v64 a16 16 0 0 0 16 16 h64 z" fill="#e8e9fa"/>
+    <!-- PDF letters in brand color -->
+    <g fill="#8286ef">
+      <!-- P -->
+      <path d="M26 160 h32 a26 26 0 0 1 0 52 h-16 v32 h-16 z M42 176 v20 h16 a10 10 0 0 0 0 -20 z"/>
+      <!-- D -->
+      <path d="M88 160 h32 a42 42 0 0 1 0 84 h-32 z M104 176 v52 h16 a26 26 0 0 0 0 -52 z"/>
+      <!-- F -->
+      <path d="M170 160 h42 v16 h-26 v16 h24 v16 h-24 v36 h-16 z"/>
+    </g>
+  </g>
+</svg>

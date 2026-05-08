@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <!-- Background: solid brand violet (no dark frame - fills safe zone for Android maskable) -->
+  <rect width="192" height="192" rx="32" fill="#8286ef"/>
+  <!-- Document centered in safe zone (~60% of canvas, all within maskable circle) -->
+  <g transform="translate(52, 36)">
+    <!-- Document body (white with subtle outline) -->
+    <path d="M6 0 a6 6 0 0 0 -6 6 v108 a6 6 0 0 0 6 6 h76 a6 6 0 0 0 6 -6 v-84 l-30 -30 z" fill="#ffffff"/>
+    <!-- Folded corner -->
+    <path d="M58 0 v24 a6 6 0 0 0 6 6 h24 z" fill="#e8e9fa"/>
+    <!-- PDF letters in brand color -->
+    <g fill="#8286ef">
+      <!-- P -->
+      <path d="M10 60 h12 a10 10 0 0 1 0 20 h-6 v12 h-6 z M16 66 v8 h6 a4 4 0 0 0 0 -8 z"/>
+      <!-- D -->
+      <path d="M33 60 h12 a16 16 0 0 1 0 32 h-12 z M39 66 v20 h6 a10 10 0 0 0 0 -20 z"/>
+      <!-- F -->
+      <path d="M64 60 h16 v6 h-10 v6 h9 v6 h-9 v14 h-6 z"/>
+    </g>
+  </g>
+</svg>

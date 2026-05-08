@@ -1,0 +1,11 @@
+node_modules
+.idea
+dist
+dev-dist
+functions
+.vercel
+*.log
+Users/
+.firebaserc
+firebase.json
+lefthook-local.yml
