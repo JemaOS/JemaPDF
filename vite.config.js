@@ -48,8 +48,8 @@ export default defineConfig({
         background_color: "#0a0a0f",
         display: "standalone",
         orientation: "any",
-        scope: "./",
-        start_url: "./",
+        scope: "/",
+        start_url: "/",
         lang: "fr",
         categories: ["productivity", "utilities"],
         icons: [
@@ -82,6 +82,6 @@ export default defineConfig({
     }),
   ],
   build: { target: "esnext" },
-  base: "./",
+  base: "/",
   worker: { format: "es" },
 });
