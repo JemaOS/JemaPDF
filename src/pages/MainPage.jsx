@@ -68,15 +68,6 @@ function MainPage({ onSelectFeature, currentTheme, onThemeChange, lang, onLangCh
           </a>
           {t("footerLineSuffix")}
         </p>
-        <p className="version-info">
-          {import.meta.env.DEV && "dev server - "}
-          {__APP_VERSION__}
-          {!["pdf.pwasuite.com"].includes(window.location.hostname) &&
-            ` - run from ${window.location.origin}${window.location.pathname}`}
-          {(window.matchMedia("(display-mode: standalone)").matches ||
-            window.navigator.standalone) &&
-            " - installed application"}
-        </p>
       </footer>
     </div>
   );
