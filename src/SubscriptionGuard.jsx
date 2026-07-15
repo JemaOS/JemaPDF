@@ -50,7 +50,7 @@ async function getAccessToken() {
     if (window.opener) {
       window.opener.postMessage({ type: 'jemaos_token_request' }, '*');
     }
-    if (window.top !== window) {
+    if (window.top && window.top !== window) {
       window.top.postMessage({ type: 'jemaos_token_request' }, '*');
     }
 
