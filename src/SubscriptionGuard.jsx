@@ -56,7 +56,7 @@ function UpgradeScreen({ appName }) {
         Cette application nécessite un abonnement JemaOS Pro.
       </p>
       <a
-        href="https://jemaos.io/pricing"
+        href="https://www.jemaos.com/tarifs"
         target="_blank"
         rel="noopener noreferrer"
         style={{
