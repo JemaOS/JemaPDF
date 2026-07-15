@@ -13,6 +13,7 @@ import GrayscalePage from "./pages/GrayscalePage.jsx";
 import ResizePage from "./pages/ResizePage.jsx";
 import CreditsPage from "./pages/CreditsPage.jsx";
 import LicensePage from "./pages/LicensePage.jsx";
+import SubscriptionGuard from "./SubscriptionGuard.jsx";
 import "./App.css";
 
 // ============ APP ============
@@ -81,7 +82,11 @@ function App() {
     }
   };
 
-  return <div className="app">{renderPage()}</div>;
+  return (
+    <SubscriptionGuard appName="JemaPDF">
+      <div className="app">{renderPage()}</div>
+    </SubscriptionGuard>
+  );
 }
 
 export default App;
