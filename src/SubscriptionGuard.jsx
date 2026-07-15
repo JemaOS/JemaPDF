@@ -15,25 +15,22 @@ function getTokenFromCookie() {
 }
 
 async function getAccessToken() {
-  // Method 1: Cookie injected by ChromeOS after SAML login
   const cookieToken = getTokenFromCookie();
   if (cookieToken) return cookieToken;
 
-  // Method 2: Direct function (injected by ChromeOS)
-  if (window.getJemaOSToken) {
+  const w = /** @type {any} */ (window);
+  if (typeof w.getJemaOSToken === 'function') {
     try {
-      return await window.getJemaOSToken();
+      return await w.getJemaOSToken();
     } catch {
       return null;
     }
   }
 
-  // Method 3: Direct property (injected by ChromeOS)
-  if (window.jemaosToken) {
-    return window.jemaosToken;
+  if (w.jemaosToken) {
+    return w.jemaosToken;
   }
 
-  // Method 4: sessionStorage (same-origin fallback)
   try {
     const sessionToken = sessionStorage.getItem('jemaos_access_token');
     if (sessionToken) return sessionToken;
