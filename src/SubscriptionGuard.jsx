@@ -15,7 +15,11 @@ import { useState, useEffect } from 'react';
 //      d'abonnement"). La grace vit dans le stockage du PWA, donc par
 //      compte utilisateur de l'appareil ;
 //   4. n'affiche le mur que sur "pas d'abonnement" confirmé ou après
-//      refresh impossible, avec un bouton "Se reconnecter" vers le SSO.
+//      refresh impossible, avec un bouton "Se reconnecter" vers le SSO ;
+//   5. reconnexion AUTOMATIQUE : token rejeté + refresh impossible ->
+//      redirection directe vers le SSO avec return_to. Le mur
+//      "Se reconnecter" n'apparaît que si l'aller-retour SSO a déjà
+//      échoué une fois (cas de bug) — jamais de boucle infinie.
 // Fichier partagé : le garder identique dans toutes les apps PWA.
 
 const API_BASE = 'https://test-connect-api.jematech.fr';
@@ -90,6 +94,8 @@ function markSubscriptionOk() {
   try {
     localStorage.setItem(GRACE_KEY, String(Date.now() + GRACE_MS));
   } catch {}
+  // Token frais obtenu : on réarme la reconnexion automatique.
+  clearReauthAttempt();
 }
 
 // Révocation immédiate : quand le serveur confirme "pas d'abonnement",
@@ -107,6 +113,22 @@ function inGracePeriod() {
   } catch {
     return false;
   }
+}
+
+// Un seul aller-retour SSO automatique par session onglet : si on revient
+// du SSO sans token valide, on affiche le mur au lieu de boucler.
+const REAUTH_FLAG = 'jemaos_reauth_attempted';
+
+function markReauthAttempted() {
+  try { sessionStorage.setItem(REAUTH_FLAG, '1'); } catch {}
+}
+
+function reauthAlreadyAttempted() {
+  try { return sessionStorage.getItem(REAUTH_FLAG) === '1'; } catch { return false; }
+}
+
+function clearReauthAttempt() {
+  try { sessionStorage.removeItem(REAUTH_FLAG); } catch {}
 }
 
 async function checkSubscription(token) {
@@ -193,7 +215,7 @@ async function verifySubscription() {
         }
       }
     }
-    return inGracePeriod() ? 'allowed' : 'denied';
+    return inGracePeriod() ? 'allowed' : 'reauth';
   }
 
   // Aucun token : la session SSO peut encore être vivante, on tente un
@@ -213,7 +235,7 @@ async function verifySubscription() {
       }
     }
   }
-  return inGracePeriod() ? 'allowed' : 'denied';
+  return inGracePeriod() ? 'allowed' : 'reauth';
 }
 
 function JemaOSLogo() {
@@ -393,6 +415,19 @@ export const SubscriptionGuard = ({ appName, children }) => {
       if (cancelled) return;
       if (outcome === 'allowed') {
         setStatus('allowed');
+      } else if (outcome === 'reauth') {
+        // Reconnexion automatique : rebond direct vers le SSO (avec
+        // return_to) sans afficher le mur. Le mur "Se reconnecter"
+        // n'apparaît que si l'aller-retour SSO a déjà échoué une fois
+        // (cas de bug) — protection anti-boucle via REAUTH_FLAG.
+        if (reauthAlreadyAttempted()) {
+          setStatus('denied');
+        } else {
+          markReauthAttempted();
+          window.location.assign(
+            `${AUTH_URL}?return_to=${encodeURIComponent(window.location.href)}`
+          );
+        }
       } else if (outcome === 'denied') {
         setStatus('denied');
       }
