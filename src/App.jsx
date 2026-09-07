@@ -2,7 +2,6 @@
    Distributed under the license specified in the root directory of this project. */
 
 import { useState, useEffect } from "react";
-import { detectBrowserLanguage } from "./i18n.js";
 import { THEMES, applyTheme } from "./constants/themes.js";
 import MainPage from "./pages/MainPage.jsx";
 import CompressPage from "./pages/CompressPage.jsx";
@@ -20,14 +19,9 @@ import "./App.css";
 function App() {
   const [currentPage, setCurrentPage] = useState("main");
   const [theme, setTheme] = useState("dark");
-  const [lang, setLang] = useState(() => detectBrowserLanguage());
-
-  // JemaOS: the system language always wins on the languagechange event
-  useEffect(() => {
-    const onLanguageChange = () => setLang(detectBrowserLanguage());
-    window.addEventListener("languagechange", onLanguageChange);
-    return () => window.removeEventListener("languagechange", onLanguageChange);
-  }, []);
+  // French by default for JemaOS PWAs; the LanguageSelector is a
+  // session-only override (never persisted).
+  const [lang, setLang] = useState("fr");
 
   // Apply theme on mount and when theme changes
   useEffect(() => {
