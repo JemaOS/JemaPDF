@@ -22,6 +22,13 @@ function App() {
   const [theme, setTheme] = useState("dark");
   const [lang, setLang] = useState(() => detectBrowserLanguage());
 
+  // JemaOS: the system language always wins on the languagechange event
+  useEffect(() => {
+    const onLanguageChange = () => setLang(detectBrowserLanguage());
+    window.addEventListener("languagechange", onLanguageChange);
+    return () => window.removeEventListener("languagechange", onLanguageChange);
+  }, []);
+
   // Apply theme on mount and when theme changes
   useEffect(() => {
     applyTheme(THEMES[theme]);
