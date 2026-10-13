@@ -41,7 +41,7 @@ import { useState, useEffect } from "react";
 // Fichier partagé : le garder identique dans toutes les apps PWA.
 
 const API_BASE = "https://connect-api.jematech.fr";
-const API_KEY = "e58492a3-b452-4197-9f4a-deb7915b9446";
+// Clé d'app retirée (audit sécurité) : autorisation via jeton utilisateur.
 
 // true uniquement sur l'hôte SSO (nephtys.jemaos.com) — sert aux branches
 // spécifiques au portail central plus bas (UI, détection de route /auth).
@@ -318,7 +318,6 @@ async function checkSubscription(token) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": API_KEY,
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({}),
@@ -400,7 +399,6 @@ async function tryRefreshToken() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": API_KEY,
       },
       body: JSON.stringify({ refresh_token: refreshToken }),
     });
