@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 
+import { connectWebLogin, persistConnectSession } from "./connectSession";
+import { getVerifiedSignedEntitlement, storeSignedEntitlementFromServer } from "./entitlementToken";
+
 // SubscriptionGuard v3 (2026-09-04)
 // ---------------------------------
 // Fix "perte de licence après 24 h" : le token JWT (cookie
@@ -41,7 +44,7 @@ import { useState, useEffect } from "react";
 // Fichier partagé : le garder identique dans toutes les apps PWA.
 
 const API_BASE = "https://connect-api.jematech.fr";
-const API_KEY = "e58492a3-b452-4197-9f4a-deb7915b9446";
+// Clé d'app retirée (audit sécurité) : autorisation via jeton utilisateur.
 
 // true uniquement sur l'hôte SSO (nephtys.jemaos.com) — sert aux branches
 // spécifiques au portail central plus bas (UI, détection de route /auth).
@@ -318,7 +321,6 @@ async function checkSubscription(token) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": API_KEY,
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({}),
@@ -330,10 +332,24 @@ async function checkSubscription(token) {
     // Freemium gate (SaaS PR #54): un plan sans apps (app_scope 'none', ex. Freemium)
     // affiche le mur 'Passer a Pro' au lieu d'ouvrir l'app.
     if (data.apps_allowed === false) return "no-subscription";
+    void storeSignedEntitlementFromServer(token);
     return "ok";
   } catch {
     return "error"; // offline/DNS/CORS : conserver l'état courant
   }
+}
+
+// Dernier recours avant le mur : jeton d'entitlement signe (verifie hors-ligne).
+async function signedEntitlementFallback() {
+  const claims = await getVerifiedSignedEntitlement();
+  if (claims !== null) {
+    if (claims.apps_allowed) {
+      return "allowed";
+    }
+    clearSubscriptionGrace();
+    return "denied";
+  }
+  return inGracePeriod() ? "allowed" : "reauth";
 }
 
 // Cherche le refresh token : pont OEM (getJemaOSRefreshToken), puis cookie
@@ -400,7 +416,6 @@ async function tryRefreshToken() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": API_KEY,
       },
       body: JSON.stringify({ refresh_token: refreshToken }),
     });
@@ -464,7 +479,7 @@ async function verifySubscription() {
           return "denied";
         }
       }
-      return inGracePeriod() ? "allowed" : "reauth";
+      return signedEntitlementFallback();
     }
     if (await tryRefreshToken()) {
       token = await getAccessToken(stale);
@@ -481,7 +496,7 @@ async function verifySubscription() {
         }
       }
     }
-    return inGracePeriod() ? "allowed" : "reauth";
+    return signedEntitlementFallback();
   }
 
   // Aucun token : la session SSO peut encore être vivante, on tente un
@@ -502,7 +517,7 @@ async function verifySubscription() {
         return "denied";
       }
     }
-    return inGracePeriod() ? "allowed" : "reauth";
+    return signedEntitlementFallback();
   }
   if (await tryRefreshToken()) {
     token = await getAccessToken();
@@ -519,7 +534,7 @@ async function verifySubscription() {
       }
     }
   }
-  return inGracePeriod() ? "allowed" : "reauth";
+  return signedEntitlementFallback();
 }
 
 function JemaOSLogo() {
@@ -567,6 +582,110 @@ function LockIcon() {
         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
       </svg>
     </div>
+  );
+}
+
+function WebLoginForm({ onSuccess }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (busy) {
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    const result = await connectWebLogin(email, password);
+    if (result.accessToken !== undefined) {
+      persistConnectSession(result.accessToken, result.refreshToken ?? null);
+      if (onSuccess) {
+        onSuccess();
+      }
+      return;
+    }
+    setError(
+      result.captchaRequired === true
+        ? "Vérification anti-robot requise. Réessayez."
+        : "Connexion impossible. Vérifiez vos identifiants Jema."
+    );
+    setBusy(false);
+  };
+
+  const inputStyle = {
+    width: "100%",
+    padding: "0.7rem 0.9rem",
+    borderRadius: "12px",
+    border: "1px solid #94a3b8",
+    fontSize: "0.95rem",
+    boxSizing: "border-box",
+    background: "#f8fafc",
+    color: "#0f172a",
+  };
+  const labelStyle = {
+    textAlign: "left",
+    fontSize: "0.8rem",
+    fontWeight: 600,
+    color: "#334155",
+  };
+
+  return (
+    <form
+      onSubmit={(event) => {
+        void handleSubmit(event);
+      }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "0.4rem",
+        width: "100%",
+        marginTop: "0.5rem",
+      }}
+    >
+      <span style={labelStyle}>Compte Jema</span>
+      <input
+        type="email"
+        required
+        placeholder="nom@exemple.com"
+        autoComplete="username"
+        value={email}
+        onChange={(event) => setEmail(event.target.value)}
+        style={inputStyle}
+      />
+      <span style={labelStyle}>Mot de passe</span>
+      <input
+        type="password"
+        required
+        placeholder="••••••••"
+        autoComplete="current-password"
+        value={password}
+        onChange={(event) => setPassword(event.target.value)}
+        style={inputStyle}
+      />
+      <button
+        type="submit"
+        disabled={busy}
+        style={{
+          background: "linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)",
+          color: "#ffffff",
+          padding: "0.7rem 1.5rem",
+          borderRadius: "9999px",
+          fontSize: "0.95rem",
+          fontWeight: 600,
+          border: "none",
+          cursor: busy ? "wait" : "pointer",
+          opacity: busy ? 0.6 : 1,
+          marginTop: "0.25rem",
+        }}
+      >
+        {busy ? "Connexion…" : "Se connecter avec Jema"}
+      </button>
+      {error !== null && (
+        <p style={{ color: "#dc2626", fontSize: "0.85rem", margin: 0 }}>{error}</p>
+      )}
+    </form>
   );
 }
 
@@ -702,6 +821,7 @@ function UpgradeScreen({ appName, onReconnect, reconnecting = false, reconnectEr
                 {reconnecting ? "Reconnexion…" : "Se reconnecter"}
               </button>
             )}
+            <WebLoginForm onSuccess={onReconnect} />
             {reconnectError && !reconnecting && !IS_SSO_HOST && (
               <p style={{ color: "#dc2626", fontSize: "0.85rem", margin: 0 }}>
                 La reconnexion a échoué. Réessayez dans un instant.
