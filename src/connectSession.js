@@ -2,7 +2,7 @@
 // Voir jemanote/src/connectSession.ts pour la version TS commentée.
 
 const API_BASE = "https://connect-api.jematech.fr";
-const CONNECT_LOGIN_URL = `${API_BASE}/v1/connect/portal-login`;
+const CONNECT_LOGIN_URL = `${API_BASE}/v1/connect/login`;
 
 const asRecord = (value) => (typeof value === "object" && value !== null ? value : {});
 
