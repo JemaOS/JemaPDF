@@ -1,21 +1,29 @@
 // Session web « Connect » — source d'auth indépendante de l'injection OS.
 // Voir jemanote/src/connectSession.ts pour la version TS commentée.
+//
+// Anti-robot : au-delà d'un seuil d'échecs, connect-api exige un token CAPTCHA
+// (Cloudflare Turnstile). Le token est fourni par le widget de SubscriptionGuard
+// et transmis ici sous `captcha_token`.
 
 const API_BASE = "https://connect-api.jematech.fr";
 const CONNECT_LOGIN_URL = `${API_BASE}/v1/connect/login`;
 
 const asRecord = (value) => (typeof value === "object" && value !== null ? value : {});
 
-export async function connectWebLogin(email, password) {
+export async function connectWebLogin(email, password, captchaToken) {
   const trimmed = String(email ?? "").trim();
   if (trimmed.length === 0 || String(password ?? "").length === 0) {
     return { error: "missing-credentials" };
   }
   try {
+    const body = { email: trimmed, password };
+    if (typeof captchaToken === "string" && captchaToken.length > 0) {
+      body.captcha_token = captchaToken;
+    }
     const res = await fetch(CONNECT_LOGIN_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: trimmed, password }),
+      body: JSON.stringify(body),
     });
     let parsed = null;
     try {
