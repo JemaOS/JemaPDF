@@ -4,26 +4,26 @@
 /* ============ ROOT & VARIABLES ============ */
 :root {
   /* Jema Technology theme: #8286ef + white/black only */
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #12121a;
-  --bg-tertiary: #1a1a25;
-  --bg-card: #12121a;
+  --bg-primary: #f8f8fb;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f0f0f5;
+  --bg-card: #ffffff;
 
   /* Accent colors - Jema purple */
   --accent-primary: #8286ef;
-  --accent-secondary: #9ea1f2;
+  --accent-secondary: #5a5fd4;
   --accent-gradient: #8286ef;
-  --accent-glow: rgba(130, 134, 239, 0.15);
+  --accent-glow: rgba(130, 134, 239, 0.1);
 
   /* Feature colors - all Jema purple */
   --compress-color: #8286ef;
   --merge-color: #8286ef;
   --split-color: #8286ef;
 
-  /* Text colors - white scale */
-  --text-primary: #ffffff;
-  --text-secondary: #a0a0b0;
-  --text-muted: #606070;
+  /* Text colors - dark scale */
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a5a;
+  --text-muted: #8a8a9a;
 
   /* Status colors - derived from accent */
   --success: #8286ef;
@@ -31,10 +31,10 @@
   --warning: #8286ef;
 
   /* Borders & shadows */
-  --border-color: rgba(255, 255, 255, 0.1);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --border-color: rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.16);
   --shadow-glow: 0 0 20px var(--accent-glow);
 
   /* Transitions */
@@ -47,6 +47,29 @@
   --radius-md: 6px;
   --radius-lg: 8px;
   --radius-xl: 12px;
+
+  color-scheme: light;
+}
+
+.dark {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-tertiary: #1a1a25;
+  --bg-card: #12121a;
+
+  --accent-secondary: #9ea1f2;
+  --accent-glow: rgba(130, 134, 239, 0.15);
+
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0b0;
+  --text-muted: #606070;
+
+  --border-color: rgba(255, 255, 255, 0.1);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.3);
+
+  color-scheme: dark;
 }
 
 /* ============ RESET & BASE ============ */
@@ -127,6 +150,10 @@ button {
 .theme-dot.active {
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 2px var(--accent-primary);
+}
+
+.theme-dot-system {
+  background: linear-gradient(90deg, #f8f8fb 50%, #0a0a0f 50%);
 }
 
 /* ============ LANGUAGE SELECTOR ============ */

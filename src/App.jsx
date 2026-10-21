@@ -2,7 +2,6 @@
    Distributed under the license specified in the root directory of this project. */
 
 import { useState, useEffect } from "react";
-import { THEMES, applyTheme } from "./constants/themes.js";
 import MainPage from "./pages/MainPage.jsx";
 import CompressPage from "./pages/CompressPage.jsx";
 import MergePage from "./pages/MergePage.jsx";
@@ -16,17 +15,52 @@ import SubscriptionGuard from "./SubscriptionGuard.jsx";
 import "./App.css";
 
 // ============ APP ============
+const THEME_STORAGE_KEY = "jemapdf-theme";
+
+const getSystemTheme = () => {
+  if (typeof window === "undefined" || !window.matchMedia) return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+};
+
+const getStoredMode = () => {
+  try {
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+    if (stored === "light" || stored === "dark" || stored === "system") {
+      return stored;
+    }
+  } catch {
+    /* storage unavailable */
+  }
+  return "system";
+};
+
 function App() {
   const [currentPage, setCurrentPage] = useState("main");
-  const [theme, setTheme] = useState("dark");
+  const [themeMode, setThemeMode] = useState(getStoredMode);
+  const [resolvedTheme, setResolvedTheme] = useState(() =>
+    themeMode === "system" ? getSystemTheme() : themeMode
+  );
   // French by default for JemaOS PWAs; the LanguageSelector is a
   // session-only override (never persisted).
   const [lang, setLang] = useState("fr");
 
-  // Apply theme on mount and when theme changes
+  // Apply the resolved theme and follow the OS while in "system" mode.
   useEffect(() => {
-    applyTheme(THEMES[theme]);
-  }, [theme]);
+    const apply = (next) => {
+      document.documentElement.classList.toggle("dark", next === "dark");
+      document.documentElement.style.colorScheme = next;
+      setResolvedTheme(next);
+    };
+
+    apply(themeMode === "system" ? getSystemTheme() : themeMode);
+
+    if (themeMode !== "system" || !window.matchMedia) return;
+
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = (event) => apply(event.matches ? "dark" : "light");
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, [themeMode]);
 
   // Scroll to top when page changes
   useEffect(() => {
@@ -38,8 +72,13 @@ function App() {
     document.documentElement.lang = lang;
   }, [lang]);
 
-  const handleThemeChange = (themeId) => {
-    setTheme(themeId);
+  const handleThemeChange = (nextMode) => {
+    setThemeMode(nextMode);
+    try {
+      window.localStorage.setItem(THEME_STORAGE_KEY, nextMode);
+    } catch {
+      /* storage unavailable */
+    }
   };
 
   const handleLangChange = (langCode) => {
@@ -74,7 +113,8 @@ function App() {
         return (
           <MainPage
             onSelectFeature={setCurrentPage}
-            currentTheme={theme}
+            currentTheme={themeMode}
+            resolvedTheme={resolvedTheme}
             onThemeChange={handleThemeChange}
             lang={lang}
             onLangChange={handleLangChange}

@@ -18,6 +18,18 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="JemaPDF" />
   <title>JemaPDF - Outils PDF par Jema Technology</title>
+  <!-- Applique le thème avant le premier rendu (aucun flash). -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('jemapdf-theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var dark = stored === 'dark' || ((!stored || stored === 'system') && prefersDark);
+        if (dark) document.documentElement.classList.add('dark');
+        document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+      } catch (e) {}
+    })();
+  </script>
 </head>
 
 <body class="notranslate" translate="no">
