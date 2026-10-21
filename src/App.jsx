@@ -49,6 +49,10 @@ function App() {
     const apply = (next) => {
       document.documentElement.classList.toggle("dark", next === "dark");
       document.documentElement.style.colorScheme = next;
+      const themeColor = document.querySelector('meta[name="theme-color"]');
+      if (themeColor) {
+        themeColor.setAttribute("content", next === "dark" ? "#0a0a0f" : "#f8f8fb");
+      }
       setResolvedTheme(next);
     };
 
