@@ -1,116 +1,113 @@
+<div align="center">
+
+<img src="public/pwa-192x192.png" width="96" height="96" alt="JemaPDF logo" />
+
 # JemaPDF
 
-[![Jema Technology](https://img.shields.io/badge/Made%20by-Jema%20Technology-8286ef)](https://www.jematechnology.fr)
-[![License](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
-[![PWA](https://img.shields.io/badge/PWA-Offline%20Ready-8286ef)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
+### Fast, private, installation-free PDF tools — 100% in your browser
 
-> **Fast, private, and installation-free PDF tools.**
+[![Made by Jema Technology](https://img.shields.io/badge/Made%20by-Jema%20Technology-8286ef)](https://www.jematechnology.fr)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
+[![React](https://img.shields.io/badge/React-18-61dafb?logo=react&logoColor=white)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-6-646cff?logo=vite&logoColor=white)](https://vitejs.dev)
+[![WebAssembly](https://img.shields.io/badge/WebAssembly-Ghostscript-654ff0?logo=webassembly&logoColor=white)](https://webassembly.org)
+[![PWA](https://img.shields.io/badge/PWA-Offline%20Ready-8286ef)](#-install-as-a-pwa)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#-contributing)
 
-JemaPDF is a suite of PDF tools running entirely in your browser. No files are ever uploaded to a server — all processing happens locally thanks to Ghostscript compiled to WebAssembly.
+**Compress · Merge · Split · Extract · Grayscale · Resize** — no upload, no cookies, no tracking.
 
----
+[Features](#-features) · [Screenshots](#-screenshots) · [Install as a PWA](#-install-as-a-pwa) · [Tech stack](#-tech-stack) · [License](#-license)
 
-## Features
+</div>
 
-| Tool | Description |
-|------|-------------|
-| **Compress** | Reduce PDF file size with multiple quality presets |
-| **Merge** | Combine multiple PDFs in a customizable order |
-| **Split** | Extract each page of a PDF into separate files |
-| **Extract** | Extract a specific range of pages |
-| **Grayscale** | Convert a color PDF to black and white |
-| **Resize** | Change page format (A4, Letter, etc.) |
+![JemaPDF — tools](screenshots/main.png)
 
 ---
 
-## Why JemaPDF?
+## ✨ Features
 
-- **100% Private** — No server uploads. Your files stay on your device.
-- **Offline** — Works without an Internet connection once installed (PWA).
-- **Fast** — Local processing via WebAssembly, no server wait time.
-- **Open Source** — Transparent source code, licensed under AGPL-3.0.
-- **Ad-free** — No trackers, no cookies.
+| Tool             | Description                                   |
+| ---------------- | --------------------------------------------- |
+| 🗜️ **Compress**  | Reduce PDF size with multiple quality presets |
+| 🔗 **Merge**     | Combine multiple PDFs in a custom order       |
+| ✂️ **Split**     | Extract every page into separate files        |
+| 📑 **Extract**   | Extract a specific range of pages             |
+| ⚫ **Grayscale** | Convert a color PDF to black & white          |
+| 📐 **Resize**    | Change page format (A4, Letter, …)            |
 
----
+## 💡 Why JemaPDF?
 
-## Installation (PWA)
-
-### Chrome / Edge / Brave
-1. Open [JemaPDF](https://www.jematechnology.fr) in your browser
-2. Click the **Install** icon in the address bar (on the right)
-3. Or via the ⋮ menu → **Install JemaPDF**
-
-### Safari (iOS / macOS)
-1. Open the site in Safari
-2. Tap the **Share** button → **Add to Home Screen**
-
-### Firefox
-1. Open the site
-2. Click the **⊕** icon in the address bar → **Install**
-
-Once installed, JemaPDF runs like a native application and remains usable **offline**.
+- **🔒 100% private** — files never leave your device; all processing is local
+- **📶 Offline** — works without a connection once installed (PWA)
+- **⚡ Fast** — local WebAssembly processing (Ghostscript), no server round-trip
+- **🧩 Open source** — transparent code, AGPL-3.0
+- **🚫 No ads, no trackers, no cookies**
 
 ---
 
-## Tech Stack
-
-- [React](https://react.dev/) — User interface
-- [Vite](https://vitejs.dev/) — Build and development
-- [Ghostscript WASM](https://github.com/ArtifexSoftware/ghostpdl) — PDF engine compiled to WebAssembly
-- [Workbox](https://developer.chrome.com/docs/workbox/) — Service Worker and caching
-- [Vitest](https://vitest.dev/) — Unit testing
-
----
-
-## Development
-
-```bash
-# Clone the repository
-git clone https://github.com/jematechnology/jemapdf.git
-cd jemapdf
-
-# Install dependencies
-npm install
-
-# Start the development server
-npm run dev
-
-# Run tests
-npm run test:run
-
-# Build for production
-npm run build
-
-# Regenerate icon PNGs from SVG sources
-npm run icons
-```
-
----
-
-## Architecture
-
-```
-src/
-├── components/       # Reusable components
-├── pages/            # Feature pages (Compress, Merge, Split...)
-├── lib/              # Web Workers and WASM logic
-├── constants/        # Themes and configuration
-├── i18n.js           # Internationalization (fr/en)
-└── App.jsx           # Entry point and routing
-```
-
----
-
-## License
-
-Distributed under the [AGPL-3.0](LICENSE) license.
-
-Copyright © 2026 [Jema Technology](https://www.jematechnology.fr)
-
----
+## 📸 Screenshots
 
 <p align="center">
-  <a href="https://www.jematechnology.fr">
-    <strong>Developed by Jema Technology</strong>
-  </a>
+  <img src="screenshots/main.png" width="900" alt="JemaPDF home" />
 </p>
+
+---
+
+## 🚀 Development
+
+```bash
+git clone https://github.com/JemaOS/JemaPDF.git
+cd JemaPDF
+npm install
+npm run dev        # dev server
+npm test           # unit tests (Vitest)
+npm run build      # production build
+```
+
+### Regenerate icons
+
+```bash
+npm run icons      # regenerate PNG icons from the SVG sources
+```
+
+---
+
+## 📲 Install as a PWA
+
+| Browser                   | How                                       |
+| ------------------------- | ----------------------------------------- |
+| **Chrome / Edge / Brave** | Click the install icon in the address bar |
+| **Safari (iOS / macOS)**  | Share → _Add to Home Screen_              |
+| **Firefox**               | Menu → _Install_                          |
+
+---
+
+## 🛠️ Tech stack
+
+- **React 18** + **Vite**
+- **Ghostscript → WebAssembly** (local PDF engine)
+- **JSZip** for archive output
+- **vite-plugin-pwa** for offline support
+- **Vitest** for tests
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Fork, branch, and open a pull request.
+
+```bash
+git checkout -b feat/my-feature
+git commit -m "feat: my feature"
+git push origin feat/my-feature
+```
+
+---
+
+## 📄 License
+
+Released under the **GNU AGPL-3.0** — see [LICENSE](LICENSE).
+
+<div align="center">
+Made with ❤️ by <a href="https://www.jematechnology.fr">Jema Technology</a>
+</div>
