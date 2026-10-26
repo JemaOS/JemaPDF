@@ -187,6 +187,25 @@ export const translations = {
       "This project is open source and available on GitHub. Contributions and feedback are welcome!",
     viewOnGithub: "View on GitHub",
 
+    // Subscription guard
+    subscriptionRequired: "This application requires a JemaOS Pro subscription.",
+    upgradeToPro: "Upgrade to Pro",
+    reconnect: "Reconnect",
+    reconnecting: "Reconnecting…",
+    reconnectFailed: "Reconnection failed. Try again in a moment.",
+    loading: "Loading…",
+    reconnectScreenTitle: "Reconnecting…",
+    verifyingSession: "Verifying your JemaOS session. You will be redirected automatically.",
+    loginAccountLabel: "Jema account",
+    loginAccountPlaceholder: "name@example.com",
+    loginPasswordLabel: "Password",
+    loginSubmit: "Sign in with Jema",
+    loginSubmitting: "Signing in…",
+    loginErrorCaptcha: "Anti-robot verification required. Please try again.",
+    loginErrorCaptchaTurnstile:
+      "Anti-robot verification required. Complete the CAPTCHA and try again.",
+    loginErrorGeneric: "Sign-in failed. Please check your Jema credentials.",
+
     // License page
     licenseTitle: "📜 License",
   },
@@ -370,6 +389,25 @@ export const translations = {
     openSourceDesc:
       "Ce projet est open source et disponible sur GitHub. Les contributions et commentaires sont les bienvenus !",
     viewOnGithub: "Voir sur GitHub",
+
+    // Subscription guard
+    subscriptionRequired: "Cette application nécessite un abonnement JemaOS Pro.",
+    upgradeToPro: "Passer à Pro",
+    reconnect: "Se reconnecter",
+    reconnecting: "Reconnexion…",
+    reconnectFailed: "La reconnexion a échoué. Réessayez dans un instant.",
+    loading: "Chargement…",
+    reconnectScreenTitle: "Reconnexion en cours…",
+    verifyingSession:
+      "Vérification de votre session JemaOS. Vous allez être redirigé automatiquement.",
+    loginAccountLabel: "Compte Jema",
+    loginAccountPlaceholder: "nom@exemple.com",
+    loginPasswordLabel: "Mot de passe",
+    loginSubmit: "Se connecter avec Jema",
+    loginSubmitting: "Connexion…",
+    loginErrorCaptcha: "Vérification anti-robot requise. Réessayez.",
+    loginErrorCaptchaTurnstile: "Vérification anti-robot requise. Validez le CAPTCHA et réessayez.",
+    loginErrorGeneric: "Connexion impossible. Vérifiez vos identifiants Jema.",
 
     // License page
     licenseTitle: "📜 Licence",

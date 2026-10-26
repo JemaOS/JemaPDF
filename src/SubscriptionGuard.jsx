@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 import { connectWebLogin, persistConnectSession } from "./connectSession";
 import { getVerifiedSignedEntitlement, storeSignedEntitlementFromServer } from "./entitlementToken";
+import { getTranslation } from "./i18n";
 
 // SubscriptionGuard v3 (2026-09-04)
 // ---------------------------------
@@ -588,10 +589,8 @@ function LockIcon() {
 // --- CAPTCHA (Cloudflare Turnstile) --------------------------------------
 // Anti-robot a seuil sur le login web (/v1/connect/login). La cle de SITE est
 // publique ; surchargeable par VITE_CAPTCHA_SITE_KEY (defaut ci-dessous).
-const CAPTCHA_SITE_KEY =
-  import.meta.env.VITE_CAPTCHA_SITE_KEY || "0x4AAAAAAFYbIgdy41K_uPQL";
-const TURNSTILE_SCRIPT =
-  "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+const CAPTCHA_SITE_KEY = import.meta.env.VITE_CAPTCHA_SITE_KEY || "0x4AAAAAAFYbIgdy41K_uPQL";
+const TURNSTILE_SCRIPT = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 
 function getTurnstile() {
   return window.turnstile;
@@ -667,7 +666,8 @@ function TurnstileWidget({ onVerify, resetSignal = 0 }) {
   );
 }
 
-function WebLoginForm({ onSuccess }) {
+function WebLoginForm({ onSuccess, lang }) {
+  const t = getTranslation(lang);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -702,11 +702,11 @@ function WebLoginForm({ onSuccess }) {
       setCaptchaRequired(true);
       setCaptchaToken("");
       setCaptchaReset((value) => value + 1);
-      setError("Vérification anti-robot requise. Validez le CAPTCHA et réessayez.");
+      setError(t("loginErrorCaptchaTurnstile"));
       setBusy(false);
       return;
     }
-    setError("Connexion impossible. Vérifiez vos identifiants Jema.");
+    setError(t("loginErrorGeneric"));
     setBusy(false);
   };
 
@@ -740,17 +740,17 @@ function WebLoginForm({ onSuccess }) {
         marginTop: "0.5rem",
       }}
     >
-      <span style={labelStyle}>Compte Jema</span>
+      <span style={labelStyle}>{t("loginAccountLabel")}</span>
       <input
         type="email"
         required
-        placeholder="nom@exemple.com"
+        placeholder={t("loginAccountPlaceholder")}
         autoComplete="username"
         value={email}
         onChange={(event) => setEmail(event.target.value)}
         style={inputStyle}
       />
-      <span style={labelStyle}>Mot de passe</span>
+      <span style={labelStyle}>{t("loginPasswordLabel")}</span>
       <input
         type="password"
         required
@@ -761,10 +761,7 @@ function WebLoginForm({ onSuccess }) {
         style={inputStyle}
       />
       {captchaRequired && (
-        <TurnstileWidget
-          resetSignal={captchaReset}
-          onVerify={(token) => setCaptchaToken(token)}
-        />
+        <TurnstileWidget resetSignal={captchaReset} onVerify={(token) => setCaptchaToken(token)} />
       )}
       <button
         type="submit"
@@ -782,7 +779,7 @@ function WebLoginForm({ onSuccess }) {
           marginTop: "0.25rem",
         }}
       >
-        {busy ? "Connexion…" : "Se connecter avec Jema"}
+        {busy ? t("loginSubmitting") : t("loginSubmit")}
       </button>
       {error !== null && (
         <p style={{ color: "#dc2626", fontSize: "0.85rem", margin: 0 }}>{error}</p>
@@ -791,7 +788,14 @@ function WebLoginForm({ onSuccess }) {
   );
 }
 
-function UpgradeScreen({ appName, onReconnect, reconnecting = false, reconnectError = false }) {
+function UpgradeScreen({
+  appName,
+  onReconnect,
+  reconnecting = false,
+  reconnectError = false,
+  lang,
+}) {
+  const t = getTranslation(lang);
   const reconnectUrl = `${AUTH_URL}?return_to=${encodeURIComponent(window.location.href)}`;
   return (
     <div
@@ -853,7 +857,7 @@ function UpgradeScreen({ appName, onReconnect, reconnecting = false, reconnectEr
               lineHeight: 1.6,
             }}
           >
-            Cette application nécessite un abonnement JemaOS Pro.
+            {t("subscriptionRequired")}
           </p>
           <div
             style={{
@@ -879,7 +883,7 @@ function UpgradeScreen({ appName, onReconnect, reconnecting = false, reconnectEr
                 boxShadow: "0 10px 25px -5px rgba(79, 70, 229, 0.45)",
               }}
             >
-              Passer à Pro
+              {t("upgradeToPro")}
             </a>
             {IS_SSO_HOST ? (
               // Sur l'hôte SSO uniquement : /auth est sa propre page de
@@ -898,7 +902,7 @@ function UpgradeScreen({ appName, onReconnect, reconnecting = false, reconnectEr
                   border: "1px solid rgba(79, 70, 229, 0.4)",
                 }}
               >
-                Se reconnecter
+                {t("reconnect")}
               </a>
             ) : (
               // Dans les PWA : reconnexion INTERNE, jamais de lien vers une
@@ -920,13 +924,13 @@ function UpgradeScreen({ appName, onReconnect, reconnecting = false, reconnectEr
                   opacity: reconnecting ? 0.6 : 1,
                 }}
               >
-                {reconnecting ? "Reconnexion…" : "Se reconnecter"}
+                {reconnecting ? t("reconnecting") : t("reconnect")}
               </button>
             )}
-            <WebLoginForm onSuccess={onReconnect} />
+            <WebLoginForm onSuccess={onReconnect} lang={lang} />
             {reconnectError && !reconnecting && !IS_SSO_HOST && (
               <p style={{ color: "#dc2626", fontSize: "0.85rem", margin: 0 }}>
-                La reconnexion a échoué. Réessayez dans un instant.
+                {t("reconnectFailed")}
               </p>
             )}
           </div>
@@ -947,7 +951,8 @@ function UpgradeScreen({ appName, onReconnect, reconnecting = false, reconnectEr
   );
 }
 
-function LoadingScreen() {
+function LoadingScreen({ lang }) {
+  const t = getTranslation(lang);
   return (
     <div
       style={{
@@ -960,7 +965,7 @@ function LoadingScreen() {
         fontFamily: "system-ui, -apple-system, sans-serif",
       }}
     >
-      <div style={{ fontSize: "1.2rem" }}>Chargement…</div>
+      <div style={{ fontSize: "1.2rem" }}>{t("loading")}</div>
     </div>
   );
 }
@@ -970,7 +975,8 @@ function LoadingScreen() {
 // domaine de l'app. En cas d'échec, le mur classique "Passer à Pro /
 // Se reconnecter" s'affiche, avec une reconnexion INTERNE (jamais de lien
 // vers une autre app).
-function ReconnectScreen({ appName }) {
+function ReconnectScreen({ appName, lang }) {
+  const t = getTranslation(lang);
   const [failed, setFailed] = useState(false);
   const [reconnecting, setReconnecting] = useState(false);
   const [reconnectError, setReconnectError] = useState(false);
@@ -1020,6 +1026,7 @@ function ReconnectScreen({ appName }) {
         onReconnect={handleReconnect}
         reconnecting={reconnecting}
         reconnectError={reconnectError}
+        lang={lang}
       />
     );
   }
@@ -1061,7 +1068,7 @@ function ReconnectScreen({ appName }) {
             color: "#0f172a",
           }}
         >
-          Reconnexion en cours…
+          {t("reconnectScreenTitle")}
         </h1>
         <p
           style={{
@@ -1071,14 +1078,14 @@ function ReconnectScreen({ appName }) {
             lineHeight: 1.6,
           }}
         >
-          Vérification de votre session JemaOS. Vous allez être redirigé automatiquement.
+          {t("verifyingSession")}
         </p>
       </div>
     </div>
   );
 }
 
-export const SubscriptionGuard = ({ appName, children }) => {
+export const SubscriptionGuard = ({ appName, children, lang }) => {
   // Démarrage instantané quand une vérification a réussi récemment (grâce de
   // 7 jours) : l'app s'affiche immédiatement et la vérification en ligne se
   // fait en arrière-plan (stale-while-revalidate). Une révocation serveur
@@ -1143,8 +1150,8 @@ export const SubscriptionGuard = ({ appName, children }) => {
     };
   }, [onAuthPath]);
 
-  if (onAuthPath) return <ReconnectScreen appName={appName} />;
-  if (status === "loading") return <LoadingScreen />;
+  if (onAuthPath) return <ReconnectScreen appName={appName} lang={lang} />;
+  if (status === "loading") return <LoadingScreen lang={lang} />;
   if (status === "denied") {
     return (
       <UpgradeScreen
@@ -1152,6 +1159,7 @@ export const SubscriptionGuard = ({ appName, children }) => {
         onReconnect={handleReconnect}
         reconnecting={reconnecting}
         reconnectError={reconnectError}
+        lang={lang}
       />
     );
   }

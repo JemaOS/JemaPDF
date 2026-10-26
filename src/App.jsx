@@ -34,15 +34,40 @@ const getStoredMode = () => {
   return "system";
 };
 
+const LANG_STORAGE_KEY = "jemaos_lang";
+
+// Langue initiale : choix persisté de l'utilisateur, sinon langue du
+// navigateur/système (en ou fr), sinon anglais. Les PWA suivent donc la
+// langue du système/navigateur par défaut.
+function detectInitialLang() {
+  try {
+    const saved = localStorage.getItem(LANG_STORAGE_KEY);
+    if (saved === "en" || saved === "fr") return saved;
+  } catch {
+    /* stockage indisponible */
+  }
+  try {
+    const candidates =
+      navigator.languages && navigator.languages.length
+        ? navigator.languages
+        : [navigator.language];
+    for (const candidate of candidates) {
+      const short = (candidate || "").toLowerCase().split("-")[0];
+      if (short === "en" || short === "fr") return short;
+    }
+  } catch {
+    /* navigator indisponible */
+  }
+  return "en";
+}
+
 function App() {
   const [currentPage, setCurrentPage] = useState("main");
   const [themeMode, setThemeMode] = useState(getStoredMode);
   const [resolvedTheme, setResolvedTheme] = useState(() =>
     themeMode === "system" ? getSystemTheme() : themeMode
   );
-  // French by default for JemaOS PWAs; the LanguageSelector is a
-  // session-only override (never persisted).
-  const [lang, setLang] = useState("fr");
+  const [lang, setLangState] = useState(detectInitialLang);
 
   // Apply the resolved theme and follow the OS while in "system" mode.
   useEffect(() => {
@@ -86,7 +111,12 @@ function App() {
   };
 
   const handleLangChange = (langCode) => {
-    setLang(langCode);
+    setLangState(langCode);
+    try {
+      localStorage.setItem(LANG_STORAGE_KEY, langCode);
+    } catch {
+      /* stockage indisponible */
+    }
   };
 
   const renderPage = () => {
@@ -128,7 +158,7 @@ function App() {
   };
 
   return (
-    <SubscriptionGuard appName="JemaPDF">
+    <SubscriptionGuard appName="JemaPDF" lang={lang}>
       <div className="app">{renderPage()}</div>
     </SubscriptionGuard>
   );
