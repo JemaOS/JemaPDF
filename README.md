@@ -47,9 +47,9 @@
 
 ## 📸 Screenshots
 
-<p align="center">
-  <img src="screenshots/main.png" width="900" alt="JemaPDF home" />
-</p>
+|                          Light                           |                             Dark                             |
+| :------------------------------------------------------: | :----------------------------------------------------------: |
+| <img src="screenshots/main.png" alt="JemaPDF — light" /> | <img src="screenshots/main-dark.png" alt="JemaPDF — dark" /> |
 
 ---
 
