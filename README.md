@@ -18,6 +18,10 @@
 
 [Features](#-features) · [Screenshots](#-screenshots) · [Install as a PWA](#-install-as-a-pwa) · [Tech stack](#-tech-stack) · [License](#-license)
 
+<br>
+
+<sub>**Keywords:** PDF tools · merge PDF · combine PDF · split PDF · compress PDF · reduce PDF size · extract PDF pages · delete PDF pages · grayscale PDF · resize PDF · A4 · Letter · PDF editor · browser PDF tools · offline PDF · WebAssembly Ghostscript · no upload · private PDF · no tracking · PWA · React</sub>
+
 </div>
 
 ![JemaPDF — tools](screenshots/main.png)
@@ -47,9 +51,25 @@
 
 ## 📸 Screenshots
 
+### Interface
+
 |                          Light                           |                             Dark                             |
 | :------------------------------------------------------: | :----------------------------------------------------------: |
 | <img src="screenshots/main.png" alt="JemaPDF — light" /> | <img src="screenshots/main-dark.png" alt="JemaPDF — dark" /> |
+
+### Tools
+
+| 🗜️ Compress | 🔗 Merge |
+| :---: | :---: |
+| <img src="screenshots/tool-compress.png" alt="JemaPDF — compress PDF" /> | <img src="screenshots/tool-merge.png" alt="JemaPDF — merge PDFs" /> |
+
+| ✂️ Split | 📑 Extract pages |
+| :---: | :---: |
+| <img src="screenshots/tool-split.png" alt="JemaPDF — split PDF" /> | <img src="screenshots/tool-extract.png" alt="JemaPDF — extract pages" /> |
+
+| ⚫ Grayscale | 📐 Resize |
+| :---: | :---: |
+| <img src="screenshots/tool-grayscale.png" alt="JemaPDF — grayscale PDF" /> | <img src="screenshots/tool-resize.png" alt="JemaPDF — resize PDF" /> |
 
 ---
 
